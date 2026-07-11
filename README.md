@@ -14,11 +14,13 @@ The product is deliberately trivial. The point is the chain around it:
 
 ## Live demo
 
-https://quotly.vercel.app <!-- replace with your deployment -->
+**https://quotly-flax.vercel.app**
+
+![Hit the free limit, pay with a test card, quota jumps to 100](docs/demo.gif)
 
 **Try it in 60 seconds:**
 
-1. Click **"Try demo"** — no signup needed
+1. Sign in with a magic link — just an email, no password
 2. Generate a palette — watch the quota counter
 3. Hit the free limit → upgrade prompt appears
 4. Go to `/pricing`, pick Pro
