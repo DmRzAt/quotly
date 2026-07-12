@@ -18,7 +18,7 @@ export function AuthButtons() {
     });
   }
 
-  async function signInWithEmail(e: React.FormEvent) {
+  async function sendMagicLink(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     const supabase = createClient();
@@ -48,7 +48,7 @@ export function AuthButtons() {
           Check your inbox — we sent you a magic link.
         </p>
       ) : (
-        <form onSubmit={signInWithEmail} className="flex gap-2">
+        <form onSubmit={sendMagicLink} className="flex gap-2">
           <Input
             type="email"
             required

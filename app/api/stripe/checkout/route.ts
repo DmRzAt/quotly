@@ -1,10 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
 import { priceIdForPlan } from "@/lib/plans";
-import { getAppUser } from "@/lib/user";
+import { getCurrentUser } from "@/lib/user";
 
 export async function POST(req: Request) {
-  const user = await getAppUser();
+  const user = await getCurrentUser();
   if (!user) return new Response("Unauthorized", { status: 401 });
 
   const body = await req.json().catch(() => null);
@@ -13,8 +13,6 @@ export async function POST(req: Request) {
     return Response.json({ error: "Invalid plan" }, { status: 400 });
   }
 
-  // Create the Stripe customer up front so the customer id is stored
-  // before any webhook arrives (and Customer Portal works immediately).
   let customerId = user.stripeCustomerId;
   if (!customerId) {
     const customer = await stripe.customers.create({
@@ -36,8 +34,6 @@ export async function POST(req: Request) {
     line_items: [{ price: priceIdForPlan(plan), quantity: 1 }],
     success_url: `${origin}/dashboard?success=1`,
     cancel_url: `${origin}/pricing`,
-    // Critical: this is how the webhook links the Stripe event back to
-    // our user.
     metadata: { userId: user.id },
     subscription_data: { metadata: { userId: user.id } },
   });

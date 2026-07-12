@@ -1,9 +1,5 @@
 import { prisma } from "@/lib/prisma";
 
-/**
- * Daily Vercel cron (vercel.json): wipes the demo account's generations
- * so its quota never fills up.
- */
 export async function GET(req: Request) {
   const auth = req.headers.get("authorization");
   if (auth !== `Bearer ${process.env.CRON_SECRET}`) {

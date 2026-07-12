@@ -1,9 +1,3 @@
-/**
- * The "product": a deterministic color palette generator.
- * Same input → same 5-color palette. Trivial on purpose — the point of
- * this project is the auth → subscription → quota chain around it.
- */
-
 function hashString(input: string): number {
   let h = 0;
   for (const ch of input) {
