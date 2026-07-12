@@ -1,11 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-/**
- * One-click demo login for recruiters: signs into a pre-created demo
- * account (seeded with a PRO subscription). POST from a <form> on the
- * landing page.
- */
 export async function POST(req: Request) {
   const email = process.env.DEMO_EMAIL;
   const password = process.env.DEMO_PASSWORD;

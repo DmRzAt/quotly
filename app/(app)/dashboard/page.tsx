@@ -2,10 +2,10 @@ import { redirect } from "next/navigation";
 import { Generator } from "@/components/generator";
 import { prisma } from "@/lib/prisma";
 import { PLAN_LIMITS, currentMonthStart, resolvePlan } from "@/lib/plans";
-import { getAppUser } from "@/lib/user";
+import { getCurrentUser } from "@/lib/user";
 
 export default async function DashboardPage() {
-  const user = await getAppUser();
+  const user = await getCurrentUser();
   if (!user) redirect("/");
 
   const sub = await prisma.subscription.findUnique({

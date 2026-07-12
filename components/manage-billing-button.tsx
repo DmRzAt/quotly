@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 export function ManageBillingButton() {
   const [loading, setLoading] = useState(false);
 
-  async function openPortal() {
+  async function openBillingPortal() {
     setLoading(true);
     const res = await fetch("/api/stripe/portal", { method: "POST" });
     const data = await res.json().catch(() => null);
@@ -18,7 +18,7 @@ export function ManageBillingButton() {
   }
 
   return (
-    <Button onClick={openPortal} disabled={loading}>
+    <Button onClick={openBillingPortal} disabled={loading}>
       {loading ? "Opening…" : "Manage subscription"}
     </Button>
   );

@@ -36,6 +36,7 @@ Stripe is in test mode. No real charges.
 - **Prisma 6** — ORM over Supabase Postgres
 - **Stripe** — Checkout, Customer Portal, webhooks (test mode)
 - **Tailwind + shadcn/ui**
+- **React Three Fiber** — 3D preview of each generated palette
 - **Vercel** — deployment
 
 ## Design decisions
