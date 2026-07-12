@@ -30,7 +30,6 @@ export function planFromPriceId(priceId: string): Plan {
   return "FREE";
 }
 
-/** No subscription, or one that is not active / already expired → FREE. */
 export function resolvePlan(
   sub: { status: string; plan: Plan; currentPeriodEnd: Date } | null,
 ): Plan {

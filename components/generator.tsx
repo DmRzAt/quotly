@@ -1,15 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
+const PaletteScene = dynamic(
+  () => import("@/components/palette-scene").then((m) => m.PaletteScene),
+  { ssr: false },
+);
+
 type GeneratorProps = {
   initialUsed: number;
-  /** null = unlimited */
   limit: number | null;
   plan: string;
 };
@@ -22,9 +27,9 @@ export function Generator({ initialUsed, limit, plan }: GeneratorProps) {
     limit !== null && initialUsed >= limit,
   );
   const [loading, setLoading] = useState(false);
-  const [copied, setCopied] = useState<string | null>(null);
+  const [copiedHex, setCopiedHex] = useState<string | null>(null);
 
-  async function generate(e: React.FormEvent) {
+  async function requestPalette(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     const res = await fetch("/api/generate", {
@@ -46,10 +51,10 @@ export function Generator({ initialUsed, limit, plan }: GeneratorProps) {
     if (data.limit !== null && data.used >= data.limit) setQuotaExceeded(true);
   }
 
-  async function copy(color: string) {
-    await navigator.clipboard.writeText(color);
-    setCopied(color);
-    setTimeout(() => setCopied(null), 1200);
+  async function copyHexToClipboard(hex: string) {
+    await navigator.clipboard.writeText(hex);
+    setCopiedHex(hex);
+    setTimeout(() => setCopiedHex(null), 1200);
   }
 
   return (
@@ -81,7 +86,7 @@ export function Generator({ initialUsed, limit, plan }: GeneratorProps) {
         </Card>
       )}
 
-      <form onSubmit={generate} className="flex gap-2">
+      <form onSubmit={requestPalette} className="flex gap-2">
         <Input
           placeholder="Type anything — e.g. “ocean sunset”"
           value={input}
@@ -96,22 +101,25 @@ export function Generator({ initialUsed, limit, plan }: GeneratorProps) {
       </form>
 
       {palette && (
-        <div className="grid grid-cols-5 overflow-hidden rounded-xl border">
-          {palette.map((color) => (
-            <button
-              key={color}
-              type="button"
-              onClick={() => copy(color)}
-              className="group flex h-32 items-end justify-center pb-3 transition-transform hover:scale-[1.02]"
-              style={{ backgroundColor: color }}
-              title="Click to copy"
-            >
-              <span className="rounded bg-black/40 px-1.5 py-0.5 font-mono text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
-                {copied === color ? "Copied!" : color}
-              </span>
-            </button>
-          ))}
-        </div>
+        <>
+          <PaletteScene colors={palette} />
+          <div className="grid grid-cols-5 overflow-hidden rounded-xl border">
+            {palette.map((hex) => (
+              <button
+                key={hex}
+                type="button"
+                onClick={() => copyHexToClipboard(hex)}
+                className="group flex h-24 items-end justify-center pb-3 transition-transform hover:scale-[1.02]"
+                style={{ backgroundColor: hex }}
+                title="Click to copy"
+              >
+                <span className="rounded bg-black/40 px-1.5 py-0.5 font-mono text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
+                  {copiedHex === hex ? "Copied!" : hex}
+                </span>
+              </button>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

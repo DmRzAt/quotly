@@ -1,10 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { generatePalette } from "@/lib/generator";
 import { PLAN_LIMITS, currentMonthStart, resolvePlan } from "@/lib/plans";
-import { getAppUser } from "@/lib/user";
+import { getCurrentUser } from "@/lib/user";
 
 export async function POST(req: Request) {
-  const user = await getAppUser();
+  const user = await getCurrentUser();
   if (!user) return new Response("Unauthorized", { status: 401 });
 
   const sub = await prisma.subscription.findUnique({
@@ -13,17 +13,13 @@ export async function POST(req: Request) {
   const plan = resolvePlan(sub);
   const limit = PLAN_LIMITS[plan];
 
-  // Quota = COUNT of this month's generations. No counter to drift out
-  // of sync — the rows are the source of truth.
   const used = await prisma.generation.count({
     where: { userId: user.id, createdAt: { gte: currentMonthStart() } },
   });
 
   if (used >= limit) {
-    // 402 Payment Required — the quota is a billing boundary, not a
-    // permissions problem (403).
     return Response.json(
-      { error: "Quota exceeded", plan, used, limit: serializeLimit(limit) },
+      { error: "Quota exceeded", plan, used, limit: toJsonLimit(limit) },
       { status: 402 },
     );
   }
@@ -44,11 +40,10 @@ export async function POST(req: Request) {
     output,
     plan,
     used: used + 1,
-    limit: serializeLimit(limit),
+    limit: toJsonLimit(limit),
   });
 }
 
-/** Infinity does not survive JSON — send null for "no limit". */
-function serializeLimit(limit: number): number | null {
+function toJsonLimit(limit: number): number | null {
   return Number.isFinite(limit) ? limit : null;
 }
