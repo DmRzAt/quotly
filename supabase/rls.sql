@@ -1,10 +1,5 @@
--- Row Level Security for tables created by Prisma.
--- The app itself talks to Postgres through Prisma with the postgres role
--- (which owns the tables and is not subject to these policies), so RLS here
--- is defense-in-depth: it stops the anon/authenticated PostgREST surface
--- from reading other users' rows if it is ever enabled.
---
--- Run in the Supabase SQL editor AFTER `prisma db push`.
+-- Run after `prisma db push`. The app connects as the table owner, so these
+-- policies only restrict Supabase's anon/authenticated API roles.
 
 alter table "User" enable row level security;
 alter table "Subscription" enable row level security;
@@ -21,6 +16,3 @@ create policy "Users can read own subscription"
 create policy "Users can read own generations"
   on "Generation" for select
   using (auth.uid()::text = "userId");
-
--- No insert/update/delete policies on purpose: all writes go through the
--- app's API routes (service connection), never from the client.

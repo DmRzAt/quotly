@@ -16,7 +16,7 @@ export function UpgradeButton({
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  async function checkout() {
+  async function startCheckout() {
     setLoading(true);
     const res = await fetch("/api/stripe/checkout", {
       method: "POST",
@@ -38,7 +38,7 @@ export function UpgradeButton({
   }
 
   return (
-    <Button onClick={checkout} disabled={loading} variant={variant} className="w-full">
+    <Button onClick={startCheckout} disabled={loading} variant={variant} className="w-full">
       {loading ? "Redirecting…" : label}
     </Button>
   );

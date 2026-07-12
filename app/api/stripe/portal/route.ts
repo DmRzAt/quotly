@@ -1,8 +1,8 @@
 import { stripe } from "@/lib/stripe";
-import { getAppUser } from "@/lib/user";
+import { getCurrentUser } from "@/lib/user";
 
 export async function POST(req: Request) {
-  const user = await getAppUser();
+  const user = await getCurrentUser();
   if (!user) return new Response("Unauthorized", { status: 401 });
   if (!user.stripeCustomerId) {
     return Response.json({ error: "No billing account" }, { status: 400 });

@@ -25,8 +25,6 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // getUser() validates the JWT against Supabase — unlike getSession(),
-  // which only reads the (spoofable) cookie.
   const {
     data: { user },
   } = await supabase.auth.getUser();

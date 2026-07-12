@@ -13,10 +13,10 @@ import {
 import { ManageBillingButton } from "@/components/manage-billing-button";
 import { prisma } from "@/lib/prisma";
 import { PLAN_META, resolvePlan } from "@/lib/plans";
-import { getAppUser } from "@/lib/user";
+import { getCurrentUser } from "@/lib/user";
 
 export default async function BillingPage() {
-  const user = await getAppUser();
+  const user = await getCurrentUser();
   if (!user) redirect("/");
 
   const sub = await prisma.subscription.findUnique({

@@ -1,11 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 
-/**
- * Returns the current app user (Prisma row), creating it on first
- * authenticated request. Returns null when not signed in.
- */
-export async function getAppUser() {
+export async function getCurrentUser() {
   const supabase = await createClient();
   const {
     data: { user },
