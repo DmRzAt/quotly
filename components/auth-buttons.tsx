@@ -37,8 +37,15 @@ export function AuthButtons() {
           Sign in with Google
         </Button>
         <form method="post" action="/api/demo-login" className="flex-1">
+          <input type="hidden" name="role" value="buyer" />
           <Button type="submit" variant="secondary" className="w-full">
-            Try demo (no signup)
+            Try as buyer
+          </Button>
+        </form>
+        <form method="post" action="/api/demo-login" className="flex-1">
+          <input type="hidden" name="role" value="seller" />
+          <Button type="submit" variant="secondary" className="w-full">
+            Try as seller
           </Button>
         </form>
       </div>

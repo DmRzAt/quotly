@@ -16,3 +16,19 @@ create policy "Users can read own subscription"
 create policy "Users can read own generations"
   on "Generation" for select
   using (auth.uid()::text = "userId");
+
+alter table "SellerAccount" enable row level security;
+alter table "Listing" enable row level security;
+alter table "Purchase" enable row level security;
+
+create policy "Users can read own seller account"
+  on "SellerAccount" for select
+  using (auth.uid()::text = "userId");
+
+create policy "Anyone can read active listings"
+  on "Listing" for select
+  using (active = true);
+
+create policy "Buyers can read own purchases"
+  on "Purchase" for select
+  using (auth.uid()::text = "buyerId");

@@ -3,6 +3,14 @@ import { Button } from "@/components/ui/button";
 import { SignOutButton } from "@/components/sign-out-button";
 import { createClient } from "@/lib/supabase/server";
 
+const authedLinks = [
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/marketplace", label: "Marketplace" },
+  { href: "/seller", label: "Sell" },
+  { href: "/purchases", label: "Purchases" },
+  { href: "/billing", label: "Billing" },
+];
+
 export async function SiteHeader() {
   const supabase = await createClient();
   const {
@@ -16,34 +24,40 @@ export async function SiteHeader() {
           Quotly
         </Link>
         <nav className="flex items-center gap-1">
-          <Button variant="ghost" size="sm" render={<Link href="/pricing" />}>
-            Pricing
-          </Button>
           {user ? (
+            <>
+              {authedLinks.map((link) => (
+                <Button
+                  key={link.href}
+                  variant="ghost"
+                  size="sm"
+                  render={<Link href={link.href} />}
+                >
+                  {link.label}
+                </Button>
+              ))}
+              <SignOutButton />
+            </>
+          ) : (
             <>
               <Button
                 variant="ghost"
                 size="sm"
-                render={<Link href="/dashboard" />}
+                render={<Link href="/marketplace" />}
               >
-                Dashboard
+                Marketplace
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
-                render={<Link href="/billing" />}
+                render={<Link href="/pricing" />}
               >
-                Billing
+                Pricing
               </Button>
-              <span className="hidden px-2 text-sm text-muted-foreground sm:inline">
-                {user.email}
-              </span>
-              <SignOutButton />
+              <Button size="sm" render={<Link href="/#signin" />}>
+                Sign in
+              </Button>
             </>
-          ) : (
-            <Button size="sm" render={<Link href="/#signin" />}>
-              Sign in
-            </Button>
           )}
         </nav>
       </div>

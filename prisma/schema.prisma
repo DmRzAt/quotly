@@ -14,8 +14,10 @@ model User {
   stripeCustomerId String?  @unique
   createdAt        DateTime @default(now())
 
-  subscription Subscription?
-  generations  Generation[]
+  subscription  Subscription?
+  generations   Generation[]
+  sellerAccount SellerAccount?
+  purchases     Purchase[]
 }
 
 model Subscription {
@@ -44,4 +46,43 @@ enum Plan {
   FREE
   PRO
   UNLIMITED
+}
+
+model SellerAccount {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id])
+  stripeAccountId  String   @unique
+  chargesEnabled   Boolean  @default(false)
+  payoutsEnabled   Boolean  @default(false)
+  detailsSubmitted Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  listings Listing[]
+}
+
+model Listing {
+  id          String  @id @default(cuid())
+  sellerId    String
+  seller      SellerAccount @relation(fields: [sellerId], references: [id])
+  title       String
+  priceCents  Int
+  paletteData String
+  active      Boolean @default(true)
+  createdAt   DateTime @default(now())
+
+  purchases Purchase[]
+}
+
+model Purchase {
+  id                    String   @id @default(cuid())
+  buyerId               String
+  buyer                 User     @relation(fields: [buyerId], references: [id])
+  listingId             String
+  listing               Listing  @relation(fields: [listingId], references: [id])
+  stripePaymentIntentId String   @unique
+  amountCents           Int
+  platformFeeCents      Int
+  status                String
+  createdAt             DateTime @default(now())
 }
